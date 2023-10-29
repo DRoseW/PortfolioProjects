@@ -1,4 +1,4 @@
---Skills used: Joins, CTE's, Temp Tables, Windows Functions, Aggregate Functions, Creating Views, Converting Data Types
+п»ї--Skills used: Joins, CTE's, Temp Tables, Windows Functions, Aggregate Functions, Creating Views, Converting Data Types
 
 -- Select Data that we are going to be starting with
 Select Location, date, total_cases, new_cases, total_deaths, population
@@ -6,25 +6,25 @@ From PortfolioProject1..CovidDeaths
 Where continent is not null 
 order by 1,2
 
---Mortality percentage among infected people in Kazakhstan/Процент смертности среди зараженных в Казахстане
+--Mortality percentage among infected people in Kazakhstan/РџСЂРѕС†РµРЅС‚ СЃРјРµСЂС‚РЅРѕСЃС‚Рё СЃСЂРµРґРё Р·Р°СЂР°Р¶РµРЅРЅС‹С… РІ РљР°Р·Р°С…СЃС‚Р°РЅРµ
 SELECT Location, Date, Total_cases, Total_deaths, (total_deaths/total_cases)*100 AS Death_Percentage
 FROM PortfolioProject1..CovidDeaths
 WHERE location LIKE '%Kazakhstan%'
 Order By 1, 2;
 
---Ratio of infected people to population in Kazakhstan/Соотношение числа зараженных к численности населения в Казахстане
+--Ratio of infected people to population in Kazakhstan/РЎРѕРѕС‚РЅРѕС€РµРЅРёРµ С‡РёСЃР»Р° Р·Р°СЂР°Р¶РµРЅРЅС‹С… Рє С‡РёСЃР»РµРЅРЅРѕСЃС‚Рё РЅР°СЃРµР»РµРЅРёСЏ РІ РљР°Р·Р°С…СЃС‚Р°РЅРµ
 SELECT Location, Date, Population, Total_cases, (Total_cases/population)*100 AS Got_Covid
 FROM PortfolioProject1..CovidDeaths
 WHERE location LIKE '%Kazakhstan%'
 Order By 1, 2;
 
---Countries with Highest Infection Rate compared to Population/Cтраны с самым высоким уровнем заражения относительно населения
+--Countries with Highest Infection Rate compared to Population/CС‚СЂР°РЅС‹ СЃ СЃР°РјС‹Рј РІС‹СЃРѕРєРёРј СѓСЂРѕРІРЅРµРј Р·Р°СЂР°Р¶РµРЅРёСЏ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РЅР°СЃРµР»РµРЅРёСЏ
 SELECT Location, Population, MAX(total_cases) AS HighestInfectionCount, MAX(total_cases/population)*100 AS PercentPopulationInfected
 FROM PortfolioProject1..CovidDeaths
 Group By location, population
 Order By PercentPopulationInfected desc;
 
---Countries with Highest Death Count per Population/Страны с самым высоким уровнем смертности
+--Countries with Highest Death Count per Population/РЎС‚СЂР°РЅС‹ СЃ СЃР°РјС‹Рј РІС‹СЃРѕРєРёРј СѓСЂРѕРІРЅРµРј СЃРјРµСЂС‚РЅРѕСЃС‚Рё
 SELECT Location, MAX(cast(total_deaths as int)) AS TotalDeathCount
 FROM PortfolioProject1..CovidDeaths
 WHERE continent is not null
@@ -33,7 +33,7 @@ Order By TotalDeathCount desc;
 
 -- BREAKING THINGS DOWN BY CONTINENT
 
--- Showing contintents with the highest death count per population/Континенты с самым высоким уровнем смертности
+-- Showing contintents with the highest death count per population/РљРѕРЅС‚РёРЅРµРЅС‚С‹ СЃ СЃР°РјС‹Рј РІС‹СЃРѕРєРёРј СѓСЂРѕРІРЅРµРј СЃРјРµСЂС‚РЅРѕСЃС‚Рё
 SELECT Continent, MAX(cast(total_deaths as int)) AS TotalDeathCount
 FROM PortfolioProject1..CovidDeaths
 WHERE Continent is not null
@@ -45,14 +45,14 @@ FROM PortfolioProject1..CovidDeaths
 WHERE continent is not NULL
 Order By 3,4;
 
--- GLOBAL NUMBERS/Мировая статистика
+-- GLOBAL NUMBERS/РњРёСЂРѕРІР°СЏ СЃС‚Р°С‚РёСЃС‚РёРєР°
 SELECT SUM(new_cases) as Total_cases, SUM(cast(new_deaths as int)) as Total_deaths, SUM(cast(new_deaths as int))/SUM(new_cases)*100 as DeathPercentage
 FROM PortfolioProject1..CovidDeaths
 WHERE Continent is not null
 --Group by date
 Order By 1, 2;
 
--- Total Population vs Vaccinations - Общее Население / Вакцинированные
+-- Total Population vs Vaccinations - РћР±С‰РµРµ РќР°СЃРµР»РµРЅРёРµ / Р’Р°РєС†РёРЅРёСЂРѕРІР°РЅРЅС‹Рµ
 SELECT dea.continent, dea.location, dea.population, vac.new_vaccinations,
 SUM(cast(vac.new_vaccinations as int)) OVER (Partition by dea.location Order By dea.location, dea.Date) AS RollingPeopleVaccinated
 --, (RollingPeopleVaccinated/population)*100
@@ -109,7 +109,7 @@ SELECT *, (RollingPeopleVaccinated/Population)*100
 FROM #PercentPopulationVaccinated
 
 
---Creating View to store data for later visualizations/Создание представления для дальнейшей визуализации
+--Creating View to store data for later visualizations/РЎРѕР·РґР°РЅРёРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ РґР»СЏ РґР°Р»СЊРЅРµР№С€РµР№ РІРёР·СѓР°Р»РёР·Р°С†РёРё
 CREATE VIEW PercentPopulationVaccinated AS 
 SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations,
 SUM(CONVERT(int, vac.new_vaccinations)) OVER (Partition by dea.location Order By dea.location, dea.Date) AS RollingPeopleVaccinated
