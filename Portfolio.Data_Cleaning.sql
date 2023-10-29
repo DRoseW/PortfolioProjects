@@ -1,9 +1,9 @@
---Cleaning Data in SQL / Очистка данных в SQL
+--Cleaning Data in SQL / ГЋГ·ГЁГ±ГІГЄГ  Г¤Г Г­Г­Г»Гµ Гў SQL
 
 SELECT *
 FROM PortfolioProject1.dbo.NashvilleHousing
 
---Standardize Date Format / Стандартизировать формат даты через ALTER TABEL
+--Standardize Date Format / Г‘ГІГ Г­Г¤Г Г°ГІГЁГ§ГЁГ°Г®ГўГ ГІГј ГґГ®Г°Г¬Г ГІ Г¤Г ГІГ» Г·ГҐГ°ГҐГ§ ALTER TABEL
 SELECT SaleDate, CONVERT(Date, SaleDate)
 FROM PortfolioProject1.dbo.NashvilleHousing
 
@@ -16,7 +16,7 @@ SET SaleDateConverted = CONVERT(Date, SaleDate)
 SELECT SaleDateConverted
 FROM PortfolioProject1.dbo.NashvilleHousing
 
---Populate Property Address data / Заполнение данных об адресе объекта
+--Populate Property Address data / Г‡Г ГЇГ®Г«Г­ГҐГ­ГЁГҐ Г¤Г Г­Г­Г»Гµ Г®ГЎ Г Г¤Г°ГҐГ±ГҐ Г®ГЎГєГҐГЄГІГ 
 SELECT a.ParcelID, a.PropertyAddress, b.ParcelID, b.PropertyAddress, ISNULL(a.PropertyAddress, b.PropertyAddress)
 FROM PortfolioProject1.dbo.NashvilleHousing a
 JOIN PortfolioProject1.dbo.NashvilleHousing b
@@ -32,7 +32,7 @@ JOIN PortfolioProject1.dbo.NashvilleHousing b
 	AND a.[UniqueID ] <> b.[UniqueID ]
 WHERE a.PropertyAddress is null
 
--- Breaking out Address into Individual Columns (Address, City, State) / Разбивка адреса на отдельные столбцы (адрес, город, штат)
+-- Breaking out Address into Individual Columns (Address, City, State) / ГђГ Г§ГЎГЁГўГЄГ  Г Г¤Г°ГҐГ±Г  Г­Г  Г®ГІГ¤ГҐГ«ГјГ­Г»ГҐ Г±ГІГ®Г«ГЎГ¶Г» (Г Г¤Г°ГҐГ±, ГЈГ®Г°Г®Г¤, ГёГІГ ГІ)
 
 SELECT PropertyAddress
 FROM PortfolioProject1.dbo.NashvilleHousing
@@ -66,7 +66,7 @@ PARSENAME(REPLACE(OwnerAddress, ',', '.'), 2),
 PARSENAME(REPLACE(OwnerAddress, ',', '.'), 1)
 FROM PortfolioProject1.dbo.NashvilleHousing
 
---Добавим значения в таблицу
+--Г„Г®ГЎГ ГўГЁГ¬ Г§Г­Г Г·ГҐГ­ГЁГї Гў ГІГ ГЎГ«ГЁГ¶Гі
 
 ALTER TABLE NashvilleHousing
 ADD OwnerSplitAddress Nvarchar(255);
@@ -87,7 +87,7 @@ UPDATE NashvilleHousing
 SET OwnerSplitState = PARSENAME(REPLACE(OwnerAddress, ',', '.'), 1)
 
 
---Change Y and N to Yes and No in "Sold as Vacant" field / Изменим Y и N на Yes и No в поле «Sold as Vacant»
+--Change Y and N to Yes and No in "Sold as Vacant" field / Г€Г§Г¬ГҐГ­ГЁГ¬ Y ГЁ N Г­Г  Yes ГЁ No Гў ГЇГ®Г«ГҐ В«Sold as VacantВ»
 
 SELECT Distinct(SoldAsVacant), count(soldasvacant)
 FROM NashvilleHousing
@@ -106,7 +106,7 @@ SET SoldAsVacant = CASE WHEN SoldAsVacant = 'Y' THEN 'Yes'
 	ELSE SoldAsVacant
 	END
 
--- Remove Duplicates / Удалим дубликаты
+-- Remove Duplicates / Г“Г¤Г Г«ГЁГ¬ Г¤ГіГЎГ«ГЁГЄГ ГІГ»
 
 WITH RawNumCTE AS (
 SELECT *,
@@ -128,7 +128,7 @@ FROM RawNumCTE
 WHERE row_num > 1
 
 
---Delete Unused Columns / Удалим неиспользуемые столбцы
+--Delete Unused Columns / Г“Г¤Г Г«ГЁГ¬ Г­ГҐГЁГ±ГЇГ®Г«ГјГ§ГіГҐГ¬Г»ГҐ Г±ГІГ®Г«ГЎГ¶Г»
 
 SELECT *
 FROM PortfolioProject1.dbo.NashvilleHousing
